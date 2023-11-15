@@ -1,0 +1,132 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Database</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        hr {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <table th:if="${bookList != null && bookList != ''}" class="books-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="aBook:${bookList}">
+            <td th:text="${aBook.id}"></td>
+            <td th:text="${aBook.title}"></td>
+            <td th:text="${aBook.author}"></td>
+            <td th:text="${aBook.isbn}"></td>
+            <td th:text="${aBook.price}"></td>
+            <td th:text="${aBook.description}"></td>
+            <td><a th:href="@{|/editBookById/${aBook.id}|}">Edit</a></td>
+            <td><a th:href="@{|/deleteBookById/${aBook.id}|}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form method="post" action="/addBook" th:action="@{/addBook}" th:object="${book}">
+        <label for="id">ID:</label>
+        <input type="number" id="id" name="id" th:field="*{id}"/>
+
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" th:field="*{title}" />
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" th:field="*{author}" />
+
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="isbn" th:field="*{isbn}" />
+
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" th:field="*{price}" />
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" th:field="*{description}" />
+
+        <input type="submit" value="Add Book" />
+    </form>
+    <a href="/books" style="margin-top: 20px; display: inline-block;">View Book List</a>
+
+</div>
+</body>
+</html>

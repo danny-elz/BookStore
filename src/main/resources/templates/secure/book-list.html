@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Books</h1>
+    <ul>
+        <li th:each="book : ${books}">
+            <a th:href="@{/book/{id}(id=${book.id})}" th:text="${book.title}">Book Title</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

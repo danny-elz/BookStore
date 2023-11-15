@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${book.title}">Book Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: 50%;
+      max-width: 600px;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    p strong {
+      color: #333;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 th:text="${book.title}">Book Title</h1>
+  <p><strong>Author:</strong> <span th:text="${book.author}">Author Name</span></p>
+  <p><strong>ISBN:</strong> <span th:text="${book.isbn}">ISBN Number</span></p>
+  <p><strong>Price:</strong> <span th:text="${book.price}">Price</span></p>
+  <p><strong>Description:</strong> <span th:text="${book.description}">Book Description</span></p>
+</div>
+</body>
+</html>
