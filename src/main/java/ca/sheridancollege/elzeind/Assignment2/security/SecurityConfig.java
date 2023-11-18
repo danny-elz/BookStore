@@ -2,6 +2,7 @@ package ca.sheridancollege.elzeind.Assignment2.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,6 +35,10 @@ public class SecurityConfig {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
         return http
                 .authorizeHttpRequests(authorize -> authorize
+                        // Permit POST and GET requests to /register for all users
+                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/register")).permitAll()
+                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/register")).permitAll()
+                        // Other rules
                         .requestMatchers(mvc.pattern("/secure/**")).hasRole("USER")
                         .requestMatchers(mvc.pattern("/")).permitAll()
                         .requestMatchers(mvc.pattern("/js/**")).permitAll()
@@ -43,6 +48,11 @@ public class SecurityConfig {
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .anyRequest().authenticated()
                 )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/index", true)
+                        .permitAll()
+                )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).disable())
                 .headers(headers -> headers.frameOptions().disable())
                 .formLogin(form -> form.loginPage("/login").permitAll())
@@ -51,18 +61,17 @@ public class SecurityConfig {
                 .build();
     }
 
-
     @Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(User.withUsername("frank@frank.com")
                 .password(passwordEncoder.encode("123"))
-                .roles("USER").build());
+                .roles("USER").build()); // Prefix "ROLE_" added
         manager.createUser(User.withUsername("fahad.jan@sheridancollege.ca")
                 .password(passwordEncoder.encode("12345"))
-                .roles("USER", "ADMIN").build());
-                 return manager;
+                .roles("USER", "ADMIN").build()); // Prefix "ROLE_" added
+        return manager;
     }
+
 
 }

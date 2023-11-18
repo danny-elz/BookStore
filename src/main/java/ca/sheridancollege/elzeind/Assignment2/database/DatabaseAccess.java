@@ -13,6 +13,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ public class DatabaseAccess {
 
     @Autowired
     protected NamedParameterJdbcTemplate jdbc;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public boolean insertBook(Book book) {
         try {
@@ -174,6 +179,49 @@ public class DatabaseAccess {
                 + "AND userId = :userId";
         namedParameters.addValue("userId", userId);
         return jdbc.queryForList(query, namedParameters, String.class);
+    }
+
+    public void addUser(String email, String password) {
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        String query = "INSERT INTO sec_user "
+                + "(email, encryptedPassword, enabled) "
+                + "VALUES (:email, :encryptedPassword, 1)";
+        namedParameters.addValue("email", email);
+        namedParameters.addValue("encryptedPassword",
+                passwordEncoder.encode(password));
+        jdbc.update(query, namedParameters);
+    }
+
+
+    public Long findRoleIdByRoleName(String roleName) {
+        try {
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            String query = "SELECT roleId FROM roles WHERE roleName = :roleName";
+            namedParameters.addValue("roleName", roleName);
+            return jdbc.queryForObject(query, namedParameters, Long.class);
+        } catch (Exception e) {
+            logger.error("Error finding role ID by role name: ", e);
+            return null;
+        }
+    }
+
+    public boolean addRole(Long userId, String roleName) {
+        Long roleId = findRoleIdByRoleName(roleName);
+        if (roleId == null) {
+            logger.error("Role not found for role name: " + roleName);
+            return false;
+        }
+
+        try {
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            String query = "INSERT INTO user_role (userId, roleId) VALUES (:userId, :roleId)";
+            namedParameters.addValue("userId", userId);
+            namedParameters.addValue("roleId", roleId);
+            return jdbc.update(query, namedParameters) > 0;
+        } catch (Exception e) {
+            logger.error("Error adding role to user: ", e);
+            return false;
+        }
     }
 
 
