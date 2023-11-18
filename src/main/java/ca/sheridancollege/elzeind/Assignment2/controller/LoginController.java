@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
     @GetMapping("/")
     public String login() {
-        return "login"; // Ensure this page is accessible without login
+        return "/login"; // Ensure this page is accessible without login
     }
 
     @GetMapping("/secure")

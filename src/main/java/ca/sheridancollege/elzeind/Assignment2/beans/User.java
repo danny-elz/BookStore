@@ -2,12 +2,18 @@ package ca.sheridancollege.elzeind.Assignment2.beans;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@NoArgsConstructor
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 @Data
-
+@NoArgsConstructor
+@RequiredArgsConstructor
 public class User {
-    private Long Id;
-    private String username;
-    private String password;
+    private Long userId;
+    @NonNull
     private String email;
+    @NonNull
+    private String encryptedPassword;
+    @NonNull
+    private Boolean enabled;
 }
+
