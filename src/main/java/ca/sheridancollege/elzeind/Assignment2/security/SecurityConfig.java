@@ -61,17 +61,16 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
+    /*@Bean
     public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("frank@frank.com")
-                .password(passwordEncoder.encode("123"))
+        manager.createUser(User.withUsername("danny@danny.com")
+                .password(passwordEncoder.encode("199913danny"))
                 .roles("USER").build()); // Prefix "ROLE_" added
-        manager.createUser(User.withUsername("fahad.jan@sheridancollege.ca")
-                .password(passwordEncoder.encode("12345"))
-                .roles("USER", "ADMIN").build()); // Prefix "ROLE_" added
         return manager;
     }
+
+     */
 
 
 }

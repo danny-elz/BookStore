@@ -7,10 +7,6 @@ import org.springframework.security.core.Authentication;
 @Controller
 public class LoginController {
 
-    @GetMapping("/")
-    public String root(Authentication authentication) {
-        return authentication == null ? "redirect:/login" : "redirect:/index";
-    }
     @GetMapping("/login")
     public String login() {
         return "/login"; // Ensure this page is accessible without login

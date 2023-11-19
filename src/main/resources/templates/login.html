@@ -1,4 +1,4 @@
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
@@ -83,19 +83,7 @@
     <input type="password" id="password" name="password" required><br>
 
     <input type="submit" value="Log In" name="login-submit">
-</form>
-
-
-<form method="post" th:action="@{/signUp}" class="form-section">
-    <h2>Sign Up</h2>
-
-    <label for="signUpEmail">Email:</label>
-    <input type="email" id="signUpEmail" name="signUpEmail" required>
-
-    <label for="signUpPassword">Password (min 8 characters):</label>
-    <input type="password" id="signUpPassword" name="signUpPassword" minlength="8" required>
-
-    <input type="submit" value="Sign Up">
-</form>
+</form><br><br>
+<a href="/register"> Don't Have an account? Click to sign up</a>
 </body>
 </html>

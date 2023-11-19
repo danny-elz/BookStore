@@ -45,22 +45,6 @@ public class DatabaseAccess {
             return false;
         }
     }
-    /*public boolean insertUser(User user){
-        try{
-            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            String query = "INSERT INTO users (username, password, email) VALUES (:username, :password, :email)";
-            namedParameters.addValue("username", user.getUsername());
-            namedParameters.addValue("password", user.getPassword());
-            namedParameters.addValue("email", user.getEmail());
-            return jdbc.update(query, namedParameters) > 0;
-        } catch (Exception e) {
-            logger.error("Error Inserting User: " + e);
-            return false;
-        }
-    }
-
-     */
-
 
     public List<Book> getBookList() {
         try {
@@ -191,20 +175,6 @@ public class DatabaseAccess {
                 passwordEncoder.encode(password));
         jdbc.update(query, namedParameters);
     }
-
-
-    public Long findRoleIdByRoleName(String roleName) {
-        try {
-            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            String query = "SELECT roleId FROM roles WHERE roleName = :roleName";
-            namedParameters.addValue("roleName", roleName);
-            return jdbc.queryForObject(query, namedParameters, Long.class);
-        } catch (Exception e) {
-            logger.error("Error finding role ID by role name: ", e);
-            return null;
-        }
-    }
-
     public boolean addRole(Long userId, String roleName) {
         Long roleId = findRoleIdByRoleName(roleName);
         if (roleId == null) {
@@ -223,6 +193,20 @@ public class DatabaseAccess {
             return false;
         }
     }
+    public Long findRoleIdByRoleName(String roleName) {
+        try {
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            String query = "SELECT roleId FROM sec_role WHERE roleName = :roleName";
+            namedParameters.addValue("roleName", roleName);
+            return jdbc.queryForObject(query, namedParameters, Long.class);
+        } catch (Exception e) {
+            logger.error("Error finding role ID by role name: ", e);
+            return null;
+        }
+    }
+
+
+
 
 
 }

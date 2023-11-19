@@ -14,51 +14,33 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class RegisterController {
     @Autowired
+    @Lazy
     private DatabaseAccess da;
 
     @GetMapping("/register")
     public String getRegister () {
-        return "/login";
+        return "register";
     }
-
-    @Controller
-    public class RegistrationController {
-
-        @Autowired
-        @Lazy
-        private DatabaseAccess da;
-
-        @PostMapping("/register")
-        public ModelAndView postRegister(@RequestParam String email, @RequestParam String password) {
-            ModelAndView modelAndView = new ModelAndView();
-
-            // Add user
-            da.addUser(email, password);
-
-            // Find user account to get the userId
-            User user = da.findUserAccount(email);
-            if (user == null) {
-                modelAndView.setViewName("registration");
-                modelAndView.addObject("error", "User not found after registration.");
-                return modelAndView;
-            }
-
-            // Add role to user
-            boolean roleAdded = da.addRole(user.getUserId(), "ROLE_USER");
+    @PostMapping("/register")
+    public String postRegister(@RequestParam String email, @RequestParam String password) {
+        da.addUser(email, password);
+        User newUser = da.findUserAccount(email);
+        if (newUser != null) {
+            boolean roleAdded = da.addRole(newUser.getUserId(), "ROLE_USER");
             if (!roleAdded) {
-                modelAndView.setViewName("registration");
-                modelAndView.addObject("error", "Failed to assign role to user.");
-                return modelAndView;
+                // Handle the error appropriately
+                return "redirect:/registration-failed"; // Redirect to a failure page
             }
-
-            // Registration successful
-            modelAndView.setViewName("registrationSuccess");
-            modelAndView.addObject("user", user);
-            return modelAndView;
+            // Continue with the registration process
+            return "redirect:/registration-success"; // Redirect to a success page
+        } else {
+            return "redirect:/registration-failed"; // Redirect to a failure page
         }
     }
 
 
-
-
 }
+
+
+
+
