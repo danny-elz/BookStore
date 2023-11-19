@@ -146,12 +146,13 @@ public class DatabaseAccess {
         }
     }
     public User findUserAccount(String email) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        String query = "SELECT * FROM sec_user where email = :email";
-        namedParameters.addValue("email", email);
         try {
-            return jdbc.queryForObject(query, namedParameters, new BeanPropertyRowMapper<User>(User.class));
-        } catch (EmptyResultDataAccessException erdae) {
+            String query = "SELECT * FROM sec_user WHERE email = :email";
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            namedParameters.addValue("email", email);
+            return jdbc.queryForObject(query, namedParameters, new BeanPropertyRowMapper<>(User.class));
+        } catch (EmptyResultDataAccessException e) {
+            // This exception is thrown when the result is empty, i.e., user not found
             return null;
         }
     }
@@ -166,15 +167,16 @@ public class DatabaseAccess {
     }
 
     public void addUser(String email, String password) {
+        String encryptedPassword = passwordEncoder.encode(password);
+
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        String query = "INSERT INTO sec_user "
-                + "(email, encryptedPassword, enabled) "
-                + "VALUES (:email, :encryptedPassword, 1)";
+        String query = "INSERT INTO sec_user (email, encryptedPassword, enabled) VALUES (:email, :encryptedPassword, 1)";
         namedParameters.addValue("email", email);
-        namedParameters.addValue("encryptedPassword",
-                passwordEncoder.encode(password));
+        namedParameters.addValue("encryptedPassword", encryptedPassword);
+
         jdbc.update(query, namedParameters);
     }
+
     public boolean addRole(Long userId, String roleName) {
         Long roleId = findRoleIdByRoleName(roleName);
         if (roleId == null) {

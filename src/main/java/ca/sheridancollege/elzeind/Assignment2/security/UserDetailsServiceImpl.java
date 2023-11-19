@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,30 +20,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     @Lazy
     private DatabaseAccess da;
+
     @Override
-    public UserDetails loadUserByUsername (String username) throws UsernameNotFoundException {
-    User user = da.findUserAccount(username);
-// If the user doesn't exist, throw an exception
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = da.findUserAccount(email);
         if (user == null) {
-            System.out.println("User not found:" + username);
-            throw new UsernameNotFoundException("User " + username + " was not found in the database");
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-// Get a list of roles for that user
-        List<String> roleNameList = da.getRolesById(user.getUserId());
-// Change the list of the user's roles into a list of
-//GrantedAuthority
-        List<GrantedAuthority> grantList = new ArrayList<>();
-        if (roleNameList != null) {
-            for (String role : roleNameList) {
-                grantList.add(new SimpleGrantedAuthority(role));
-            }
-        }
-// Convert custom User bean into Spring Boot UserDetails
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getEncryptedPassword(),
-                grantList);
-        return userDetails;
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
+                user.getEncryptedPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        // Assuming every user has the role "ROLE_USER". Modify as per your role setup.
     }
 }
-
 

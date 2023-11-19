@@ -32,9 +32,9 @@ public class RegisterController {
                 return "redirect:/registration-failed"; // Redirect to a failure page
             }
             // Continue with the registration process
-            return "redirect:/registration-success"; // Redirect to a success page
+                return "redirect:/login"; // Redirect to a success page
         } else {
-            return "redirect:/registration-failed"; // Redirect to a failure page
+                return "redirect:/registration-failed"; // Redirect to a failure page
         }
     }
 

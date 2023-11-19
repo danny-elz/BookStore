@@ -50,27 +50,21 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/index", true)
+                        .defaultSuccessUrl("/secure/index", true)
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).disable())
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+                        .disable()
+                )
                 .headers(headers -> headers.frameOptions().disable())
-                .formLogin(form -> form.loginPage("/login").permitAll())
-                .exceptionHandling(exception -> exception.accessDeniedPage("/permission-denied"))
-                .logout(logout -> logout.permitAll())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/permission-denied")
+                )
+                .logout(logout -> logout
+                        .permitAll()
+                )
                 .build();
     }
-
-    /*@Bean
-    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("danny@danny.com")
-                .password(passwordEncoder.encode("199913danny"))
-                .roles("USER").build()); // Prefix "ROLE_" added
-        return manager;
-    }
-
-     */
-
 
 }
