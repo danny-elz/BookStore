@@ -3,17 +3,14 @@ package ca.sheridancollege.elzeind.Assignment2.database;
 import ca.sheridancollege.elzeind.Assignment2.beans.CartItem;
 import ca.sheridancollege.elzeind.Assignment2.beans.Order;
 import org.slf4j.Logger;
-
 import ca.sheridancollege.elzeind.Assignment2.beans.Book;
 import ca.sheridancollege.elzeind.Assignment2.beans.User;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
@@ -107,30 +104,45 @@ public class DatabaseAccess {
             return null;
         }
     }
-    public boolean addToCart(CartItem cartItem) {
-        try {
-            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        public void addToCart(CartItem cartItem) {
             String query = "INSERT INTO cart (userId, bookId, quantity) VALUES (:userId, :bookId, :quantity)";
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
             namedParameters.addValue("userId", cartItem.getUserId());
             namedParameters.addValue("bookId", cartItem.getBookId());
             namedParameters.addValue("quantity", cartItem.getQuantity());
-            return jdbc.update(query, namedParameters) > 0;
+            jdbc.update(query, namedParameters);
+        }
+
+    public Long findUserIdByEmail(String email) {
+        try {
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            namedParameters.addValue("email", email);
+
+            String query = "SELECT userId FROM sec_user WHERE email = :email";
+            return jdbc.queryForObject(query, namedParameters, Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (Exception e) {
-            logger.error("Error adding to cart: ", e);
-            return false;
+            logger.error("Error finding user ID by email: ", e);
+            return null;
         }
     }
+
     public List<CartItem> getCartItems(Long userId) {
         try {
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            String query = "SELECT * FROM cart WHERE userId = :userId";
+            String query = "SELECT c.id as cartId, c.userId, c.bookId, c.quantity, b.title as bookName, b.price as bookPrice " +
+                    "FROM cart c INNER JOIN books b ON c.bookId = b.id " +
+                    "WHERE c.userId = :userId";
+
             namedParameters.addValue("userId", userId);
             return jdbc.query(query, namedParameters, new BeanPropertyRowMapper<>(CartItem.class));
         } catch (Exception e) {
-            logger.error("Error retrieving cart items: ", e);
+            logger.error("Error retrieving cart items for user ID " + userId + ": ", e);
             return new ArrayList<>();
         }
     }
+
 
     public boolean placeOrder(Order order) {
         try {
@@ -146,12 +158,13 @@ public class DatabaseAccess {
         }
     }
     public User findUserAccount(String email) {
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        String query = "SELECT * FROM sec_user where email = :email";
-        namedParameters.addValue("email", email);
         try {
-            return jdbc.queryForObject(query, namedParameters, new BeanPropertyRowMapper<User>(User.class));
-        } catch (EmptyResultDataAccessException erdae) {
+            String query = "SELECT * FROM sec_user WHERE email = :email";
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            namedParameters.addValue("email", email);
+            return jdbc.queryForObject(query, namedParameters, new BeanPropertyRowMapper<>(User.class));
+        } catch (EmptyResultDataAccessException e) {
+            // This exception is thrown when the result is empty, i.e., user not found
             return null;
         }
     }
@@ -166,15 +179,16 @@ public class DatabaseAccess {
     }
 
     public void addUser(String email, String password) {
+        String encryptedPassword = passwordEncoder.encode(password);
+
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        String query = "INSERT INTO sec_user "
-                + "(email, encryptedPassword, enabled) "
-                + "VALUES (:email, :encryptedPassword, 1)";
+        String query = "INSERT INTO sec_user (email, encryptedPassword, enabled) VALUES (:email, :encryptedPassword, 1)";
         namedParameters.addValue("email", email);
-        namedParameters.addValue("encryptedPassword",
-                passwordEncoder.encode(password));
+        namedParameters.addValue("encryptedPassword", encryptedPassword);
+
         jdbc.update(query, namedParameters);
     }
+
     public boolean addRole(Long userId, String roleName) {
         Long roleId = findRoleIdByRoleName(roleName);
         if (roleId == null) {
@@ -204,6 +218,8 @@ public class DatabaseAccess {
             return null;
         }
     }
+
+
 
 
 

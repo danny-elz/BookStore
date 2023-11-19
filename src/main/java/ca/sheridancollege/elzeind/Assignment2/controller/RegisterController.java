@@ -28,13 +28,12 @@ public class RegisterController {
         if (newUser != null) {
             boolean roleAdded = da.addRole(newUser.getUserId(), "ROLE_USER");
             if (!roleAdded) {
-                // Handle the error appropriately
                 return "redirect:/registration-failed"; // Redirect to a failure page
             }
             // Continue with the registration process
-            return "redirect:/registration-success"; // Redirect to a success page
+                return "redirect:/login"; // Redirect to a success page
         } else {
-            return "redirect:/registration-failed"; // Redirect to a failure page
+                return "redirect:/registration-failed"; // Redirect to a failure page
         }
     }
 

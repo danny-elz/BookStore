@@ -7,14 +7,14 @@ import org.springframework.security.core.Authentication;
 @Controller
 public class LoginController {
 
-    @GetMapping("/login")
-    public String login() {
+    @GetMapping("/")
+    public String getlogin() {
         return "/login"; // Ensure this page is accessible without login
     }
 
-    @GetMapping("/secure")
-    public String secureIndex() {
-        return "secure/index"; // Redirect to the secured index page
+    @GetMapping("/login")
+    public String login() {
+        return "/login"; // Ensure this page is accessible without login
     }
 
     @GetMapping("/permission-denied")

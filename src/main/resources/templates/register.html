@@ -3,17 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px; /* Adjust as needed */
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ensure form takes full width of the container */
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px; /* Add space between the heading and the form */
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+    </style>
 </head>
 <body>
-<h1>Register Here!</h1>
-<script src="../static/js/script.js" th:src="@{/js/script.js}"></script>
-<div id="error" class="error"></div>
-<form name="form" action="#" th:action="@{/register}" method="post" onsubmit="return verify()">
-  Email: <input type="email" name="email" /><br>
-  Password: <input type="password" name="password" /><br>
-  Verify Password: <input type="password" name="verifyPassword" /><br>
-  <input type="submit" value="Register">
-</form>
-
+<div class="register-container">
+    <h1>Register Here!</h1>
+    <script src="../static/js/script.js" th:src="@{/js/script.js}"></script>
+    <div id="error" class="error"></div>
+    <form name="form" action="#" th:action="@{/register}" method="post" onsubmit="return verify()">
+        Email: <input type="email" name="email" /><br>
+        Password: <input type="password" name="password" minlength="8"/><br>
+        Verify Password: <input type="password" name="verifyPassword" /><br>
+        <input type="submit" value="Register">
+    </form>
+</div>
 </body>
 </html>

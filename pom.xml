@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ca.sheridancollege.elzeind</groupId>
-	<artifactId>Assignment2</artifactId>
+	<artifactId><![CDATA[BookStoreAssignment<Danny>]]></artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Assignment2</name>
 	<description>Demo project for Spring Boot</description>
