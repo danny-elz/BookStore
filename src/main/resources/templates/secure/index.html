@@ -11,11 +11,60 @@
             background: #f4f4f4;
             color: #333;
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
+
+        .page-container {
+            position: relative;
+            width: 100%;
         }
+
+        .view-books-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .view-books-button:hover {
+            background-color: #0056b3;
+        }
+
+        .logout-button {
+            display: block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f4f4f4;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-button {
+            padding: 5px 10px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         table {
             width: 100%;
             margin-top: 20px;
@@ -76,7 +125,8 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="page-container">
+    <button class="logout-button" onclick="location.href='/logout'">Logout</button>
     <table th:if="${bookList != null && bookList != ''}" class="books-table">
         <thead>
         <tr>
@@ -125,7 +175,7 @@
 
         <input type="submit" value="Add Book" />
     </form>
-    <a href="/books" style="margin-top: 20px; display: inline-block;">View Book List</a>
+    <a href="/books" class="view-books-button">View Book List</a>
 
 </div>
 </body>

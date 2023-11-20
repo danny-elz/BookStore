@@ -31,6 +31,7 @@ CREATE TABLE user_role
     roleId BIGINT NOT NULL
 );
 
+
 ALTER TABLE user_role
     ADD CONSTRAINT user_role_uk UNIQUE (userId, roleId);
 

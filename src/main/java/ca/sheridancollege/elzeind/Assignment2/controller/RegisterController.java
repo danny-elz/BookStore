@@ -5,6 +5,7 @@ import ca.sheridancollege.elzeind.Assignment2.database.DatabaseAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,20 +23,26 @@ public class RegisterController {
         return "register";
     }
     @PostMapping("/register")
-    public String postRegister(@RequestParam String email, @RequestParam String password) {
-        da.addUser(email, password);
+    public String postRegister(Model model, @RequestParam String email, @RequestParam String password) {
+        String result = da.addUser(email, password);
+
+        if ("EmailExists".equals(result)) {
+            model.addAttribute("errorMessage", "User with this email already exists.");
+            return "register";
+        }
+
         User newUser = da.findUserAccount(email);
         if (newUser != null) {
             boolean roleAdded = da.addRole(newUser.getUserId(), "ROLE_USER");
             if (!roleAdded) {
-                return "redirect:/registration-failed"; // Redirect to a failure page
+                return "redirect:/registration-failed";
             }
-            // Continue with the registration process
-                return "redirect:/login"; // Redirect to a success page
+            return "redirect:/login";
         } else {
-                return "redirect:/registration-failed"; // Redirect to a failure page
+            return "redirect:/registration-failed";
         }
     }
+
 
 
 }

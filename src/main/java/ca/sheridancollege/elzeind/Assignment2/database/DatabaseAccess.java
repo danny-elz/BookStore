@@ -1,12 +1,14 @@
 package ca.sheridancollege.elzeind.Assignment2.database;
 
 import ca.sheridancollege.elzeind.Assignment2.beans.CartItem;
-import ca.sheridancollege.elzeind.Assignment2.beans.Order;
+//import ca.sheridancollege.elzeind.Assignment2.beans.Order;
 import org.slf4j.Logger;
+
 import ca.sheridancollege.elzeind.Assignment2.beans.Book;
 import ca.sheridancollege.elzeind.Assignment2.beans.User;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -144,19 +146,21 @@ public class DatabaseAccess {
     }
 
 
-    public boolean placeOrder(Order order) {
+    /*public boolean placeOrder(Order order) {
         try {
             MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-            String query = "INSERT INTO orders (userId, bookId, quantity) VALUES (:userId, :bookId, :quantity)";
+            String query = "INSERT INTO orders (userId, Address, TotalAmount) VALUES (:userId, :Address, :TotalAmount)";
             namedParameters.addValue("userId", order.getUserId());
-            namedParameters.addValue("bookId", order.getBookId());
-            namedParameters.addValue("quantity", order.getQuantity());
+            namedParameters.addValue("Address", order.getAddress());
+            namedParameters.addValue("TotalAmount", order.getTotalAmount());
             return jdbc.update(query, namedParameters) > 0;
         } catch (Exception e) {
             logger.error("Error placing order: ", e);
             return false;
         }
     }
+
+     */
     public User findUserAccount(String email) {
         try {
             String query = "SELECT * FROM sec_user WHERE email = :email";
@@ -178,16 +182,27 @@ public class DatabaseAccess {
         return jdbc.queryForList(query, namedParameters, String.class);
     }
 
-    public void addUser(String email, String password) {
-        String encryptedPassword = passwordEncoder.encode(password);
+    public String addUser(String email, String password) {
 
-        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        String query = "INSERT INTO sec_user (email, encryptedPassword, enabled) VALUES (:email, :encryptedPassword, 1)";
-        namedParameters.addValue("email", email);
-        namedParameters.addValue("encryptedPassword", encryptedPassword);
+        try {
+            String encryptedPassword = passwordEncoder.encode(password);
 
-        jdbc.update(query, namedParameters);
+            MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+            String query = "INSERT INTO sec_user (email, encryptedPassword, enabled) VALUES (:email, :encryptedPassword, 1)";
+            namedParameters.addValue("email", email);
+            namedParameters.addValue("encryptedPassword", encryptedPassword);
+
+            jdbc.update(query, namedParameters);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getCause() != null) {
+                return "EmailExists";
+            }
+            throw e;
+
+        }
+        return null;
     }
+
 
     public boolean addRole(Long userId, String roleName) {
         Long roleId = findRoleIdByRoleName(roleName);
