@@ -3,6 +3,12 @@
     <meta charset="UTF-8">
     <title>Login Page</title>
     <style>
+        h1 {
+            color: black;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -75,6 +81,7 @@
 </head>
 <body>
 <div class="login-container">
+    <h1>Bookstore Database</h1>
     <form method="post" th:action="@{/login}">
         <h2>Login</h2>
         <div th:if="${param.error}">

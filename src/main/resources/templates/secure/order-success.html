@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+</head>
+<body>
+<h1>Order Success</h1>
+<div th:if="${cartItems.isEmpty()}">
+    <p>Your cart is empty.</p>
+</div>
+<div th:unless="${cartItems.isEmpty()}">
+    <ul>
+        <li th:each="item : ${cartItems}">
+            <span th:text="${item.bookName}">Book Name</span> -
+            <span th:text="${item.quantity}">Quantity</span> -
+            <span th:text="${item.bookPrice}">Price</span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

@@ -32,7 +32,6 @@ public class SecurityConfig {
                         // Permit POST and GET requests to /register for all users
                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/register")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/register")).permitAll()
-                        // Other rules
                         .requestMatchers(mvc.pattern("/secure/**")).hasRole("USER")
                         .requestMatchers(mvc.pattern("/")).permitAll()
                         .requestMatchers(mvc.pattern("/js/**")).permitAll()
